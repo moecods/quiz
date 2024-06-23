@@ -8,27 +8,78 @@ import (
 )
 
 type Quiz struct {
-	ID primitive.ObjectID
-	Title string
+	ID          primitive.ObjectID
+	Title       string
 	Description string
-	Questions []Question
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Questions   []Question
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type Question struct {
-	title string
-	correct_answer string
-	user_answer string
+	ID            primitive.ObjectID
+	Type          string
+	Text          string
+	Options       []string
+	CorrectOption int
+}
+
+type Answer struct {
+	ID             primitive.ObjectID
+	QuizID         primitive.ObjectID
+	QuestionID     primitive.ObjectID
+	Type           string
+	AnswerText     string
+	SelectedOption int
+	IsCorrect      bool
+	AnsweredAt     time.Time
 }
 
 func main() {
 	quiz := Quiz{
-		Title: "english A1",
+		ID:          primitive.NewObjectID(),
+		Title:       "english A1",
 		Description: "General Knowledge English",
-		CreatedAt:  time.Now(),
-		UpdatedAt: time.Now(),
-	} 
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
 
-	fmt.Println(quiz)
+	questions := []Question{
+		{
+			ID:   primitive.NewObjectID(),
+			Type: "descriptive",
+			Text: "Describe the process of photosynthesis.",
+		},
+		{
+			ID:            primitive.NewObjectID(),
+			Type:          "test",
+			Text:          "What is the capital of France?",
+			Options:       []string{"Paris", "London", "Berlin", "Madrid"},
+			CorrectOption: 0,
+		},
+	}
+
+	quiz.Questions = questions
+
+	var answers []Answer
+
+	answerText := "Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll."
+    answers = append(answers, Answer{
+        ID:         primitive.NewObjectID(),
+        QuizID:     quiz.ID,
+        QuestionID: quiz.Questions[0].ID,
+        AnswerText: answerText,
+        AnsweredAt: time.Now(),
+    })
+
+	answers = append(answers, Answer{
+        ID:             primitive.NewObjectID(),
+        QuizID:         quiz.ID,
+        QuestionID:     quiz.Questions[1].ID,
+        SelectedOption: 1,
+        IsCorrect:      false,
+        AnsweredAt:     time.Now(),
+    })
+
+	fmt.Println(answers, questions)
 }
