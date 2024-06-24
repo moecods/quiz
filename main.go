@@ -1,19 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"time"
-
+	"net/http"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Quiz struct {
-	ID          primitive.ObjectID
-	Title       string
-	Description string
-	Questions   []Question
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+    ID          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+    Title       string             `bson:"title" json:"title"`
+    Description string             `bson:"description" json:"description"`
+    Questions   []Question         `bson:"questions" json:"questions"`
+    CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
+    UpdatedAt   time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
 type Question struct {
@@ -80,6 +80,11 @@ func main() {
         IsCorrect:      false,
         AnsweredAt:     time.Now(),
     })
-
-	fmt.Println(answers, questions)
+	
+	http.HandleFunc("GET /quizzes/", GetQuizzes)
+	log.Println("Starting server on :8020")
+	err := http.ListenAndServe(":8020", nil)
+	if err != nil {
+		log.Fatalf("Could not start server: %s\n", err.Error())
+	}
 }
