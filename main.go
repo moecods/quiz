@@ -1,19 +1,21 @@
 package main
 
 import (
+	"context"
 	"log"
-	"time"
 	"net/http"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Quiz struct {
-    ID          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-    Title       string             `bson:"title" json:"title"`
-    Description string             `bson:"description" json:"description"`
-    Questions   []Question         `bson:"questions" json:"questions"`
-    CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
-    UpdatedAt   time.Time          `bson:"updated_at" json:"updated_at"`
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Title       string             `bson:"title" json:"title"`
+	Description string             `bson:"description" json:"description"`
+	Questions   []Question         `bson:"questions" json:"questions"`
+	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt   time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
 type Question struct {
@@ -64,24 +66,35 @@ func main() {
 	var answers []Answer
 
 	answerText := "Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll."
-    answers = append(answers, Answer{
-        ID:         primitive.NewObjectID(),
-        QuizID:     quiz.ID,
-        QuestionID: quiz.Questions[0].ID,
-        AnswerText: answerText,
-        AnsweredAt: time.Now(),
-    })
+	answers = append(answers, Answer{
+		ID:         primitive.NewObjectID(),
+		QuizID:     quiz.ID,
+		QuestionID: quiz.Questions[0].ID,
+		AnswerText: answerText,
+		AnsweredAt: time.Now(),
+	})
 
 	answers = append(answers, Answer{
-        ID:             primitive.NewObjectID(),
-        QuizID:         quiz.ID,
-        QuestionID:     quiz.Questions[1].ID,
-        SelectedOption: 1,
-        IsCorrect:      false,
-        AnsweredAt:     time.Now(),
-    })
-	
-	http.HandleFunc("GET /quizzes/", GetQuizzes)
+		ID:             primitive.NewObjectID(),
+		QuizID:         quiz.ID,
+		QuestionID:     quiz.Questions[1].ID,
+		SelectedOption: 1,
+		IsCorrect:      false,
+		AnsweredAt:     time.Now(),
+	})
+
+	client := ConnectToDB()
+	defer func() {
+		if err := client.Disconnect(context.TODO()); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	quizCollection := GetQuizCollection()
+	quizRepo := NewQuizRepository(quizCollection)
+	quizHandler := NewQuizHandler(*quizRepo)
+
+	http.HandleFunc("GET /quizzes/", quizHandler.GetQuizzesHandler)
 	log.Println("Starting server on :8020")
 	err := http.ListenAndServe(":8020", nil)
 	if err != nil {
