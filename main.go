@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"time"
-
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -94,10 +94,29 @@ func main() {
 	quizRepo := NewQuizRepository(quizCollection)
 	quizHandler := NewQuizHandler(*quizRepo)
 
-	http.HandleFunc("GET /quizzes/", quizHandler.GetQuizzesHandler)
-	log.Println("Starting server on :8020")
+	r := mux.NewRouter()
+	r.HandleFunc("/quizzes", recoverHandler(quizHandler.GetQuizzesHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/quizzes", recoverHandler(quizHandler.AddQuizHandler)).Methods(http.MethodPost)
+	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.UpdateQuizHandler)).Methods(http.MethodPut)
+	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.DeleteQuizHandler)).Methods(http.MethodDelete)
+	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.GetQuizHandler)).Methods(http.MethodGet)
+
+	http.Handle("/", r)
 	err := http.ListenAndServe(":8020", nil)
 	if err != nil {
 		log.Fatalf("Could not start server: %s\n", err.Error())
+	}
+	log.Println("Starting server on :8020")
+}
+
+func recoverHandler(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if rec := recover(); rec != nil {
+				log.Printf("Recovered from panic: %v", rec)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			}
+		}()
+		h(w, r)
 	}
 }
