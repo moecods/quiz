@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -19,22 +20,22 @@ type Quiz struct {
 }
 
 type Question struct {
-	ID            primitive.ObjectID
-	Type          string
-	Text          string
-	Options       []string
-	CorrectOption int
+	ID            primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Type          string             `bson:"type" json:"type"` // Type of question: "descriptive" or "test"
+	Text          string             `bson:"text" json:"text"`
+	Options       []string           `bson:"options" json:"options"`
+	CorrectOption int                `bson:"correct_option" json:"correct_option"`
 }
 
 type Answer struct {
-	ID             primitive.ObjectID
-	QuizID         primitive.ObjectID
-	QuestionID     primitive.ObjectID
-	Type           string
-	AnswerText     string
-	SelectedOption int
-	IsCorrect      bool
-	AnsweredAt     time.Time
+	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	QuizID         primitive.ObjectID `bson:"quiz_id" json:"quiz_id"`
+	QuestionID     primitive.ObjectID `bson:"question_id" json:"question_id"`
+	Type           string             `bson:"type" json:"type"`
+	AnswerText     string             `bson:"answer_text" json:"answer_text"`
+	SelectedOption int				  `bson:"selection_option" json:"selection_option"`
+	IsCorrect      bool               `bson:"is_correct" json:"is_correct"`
+	AnsweredAt     time.Time          `bson:"answered_at" json:"answered_at"`
 }
 
 func main() {
@@ -100,6 +101,12 @@ func main() {
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.UpdateQuizHandler)).Methods(http.MethodPut)
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.DeleteQuizHandler)).Methods(http.MethodDelete)
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.GetQuizHandler)).Methods(http.MethodGet)
+
+	answerCollection := GetAnswerCollection()
+	answerRepo := NewAnswerRepository(answerCollection)
+	answerHandler := NewAnswerHandler(*answerRepo)
+
+	r.HandleFunc("/quizzes/{id}/answers", recoverHandler(answerHandler.AddAnswersHandler)).Methods(http.MethodPost)
 
 	http.Handle("/", r)
 	err := http.ListenAndServe(":8020", nil)

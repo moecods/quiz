@@ -42,3 +42,11 @@ func GetQuizCollection() *mongo.Collection {
 
     return mongoClient.Database(dbName).Collection("quizzes")
 }
+
+func GetAnswerCollection() *mongo.Collection {
+    if mongoClient == nil {
+        ConnectToDB()
+    }
+
+    return mongoClient.Database(dbName).Collection("answers")
+}

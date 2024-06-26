@@ -47,6 +47,13 @@ func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    questions := quiz.Questions
+    for i := range questions {
+        questions[i].ID = primitive.NewObjectID()
+    }
+
+    quiz.Questions = questions
+
     err = h.QuizRepo.AddQuiz(&quiz)
     if err != nil {
         http.Error(w, err.Error() , http.StatusBadRequest)
