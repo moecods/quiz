@@ -31,59 +31,22 @@ type Answer struct {
 	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	QuizID         primitive.ObjectID `bson:"quiz_id" json:"quiz_id"`
 	QuestionID     primitive.ObjectID `bson:"question_id" json:"question_id"`
+	ParticipantID  primitive.ObjectID `bson:"participant_id" json:"participant_id"`
 	Type           string             `bson:"type" json:"type"`
 	AnswerText     string             `bson:"answer_text" json:"answer_text"`
-	SelectedOption int				  `bson:"selection_option" json:"selection_option"`
+	SelectedOption int                `bson:"selection_option" json:"selection_option"`
 	IsCorrect      bool               `bson:"is_correct" json:"is_correct"`
 	AnsweredAt     time.Time          `bson:"answered_at" json:"answered_at"`
 }
 
+type Participant struct {
+	ID         primitive.ObjectID
+	Status     string `bson:"status" json:"status"` // not_started, started, finished
+	StartAt    time.Time
+	FinishedAt time.Time
+}
+
 func main() {
-	quiz := Quiz{
-		ID:          primitive.NewObjectID(),
-		Title:       "english A1",
-		Description: "General Knowledge English",
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-	}
-
-	questions := []Question{
-		{
-			ID:   primitive.NewObjectID(),
-			Type: "descriptive",
-			Text: "Describe the process of photosynthesis.",
-		},
-		{
-			ID:            primitive.NewObjectID(),
-			Type:          "test",
-			Text:          "What is the capital of France?",
-			Options:       []string{"Paris", "London", "Berlin", "Madrid"},
-			CorrectOption: 0,
-		},
-	}
-
-	quiz.Questions = questions
-
-	var answers []Answer
-
-	answerText := "Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll."
-	answers = append(answers, Answer{
-		ID:         primitive.NewObjectID(),
-		QuizID:     quiz.ID,
-		QuestionID: quiz.Questions[0].ID,
-		AnswerText: answerText,
-		AnsweredAt: time.Now(),
-	})
-
-	answers = append(answers, Answer{
-		ID:             primitive.NewObjectID(),
-		QuizID:         quiz.ID,
-		QuestionID:     quiz.Questions[1].ID,
-		SelectedOption: 1,
-		IsCorrect:      false,
-		AnsweredAt:     time.Now(),
-	})
-
 	client := ConnectToDB()
 	defer func() {
 		if err := client.Disconnect(context.TODO()); err != nil {
