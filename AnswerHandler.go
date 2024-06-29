@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"moecods/quiz/utils"
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -28,13 +29,7 @@ type SaveAnswerRequest struct {
 
 func (h *AnswerHandler) GetAnswersHandler(w http.ResponseWriter, r *http.Request) {
 	answers, _ := h.AnswerRepo.ListAnswers()
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(answers); err != nil {
-		log.Printf("Failed to encode response: %v", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-	}
+	utils.RespondWithJSON(w, http.StatusOK, answers)
 }
 
 func (h *AnswerHandler) AddAnswersHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,18 +44,11 @@ func (h *AnswerHandler) AddAnswersHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// log.Printf("Request body: %s", string(body))
-	
+
 	if err := json.Unmarshal(body, &answerRequest); err != nil {
 		log.Printf("Failed to unmarshal request body: %v", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated) // 201 Created
-
-	if err := json.NewEncoder(w).Encode(answerRequest); err != nil {
-		log.Printf("Failed to encode response: %v", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-	}
+	utils.RespondWithJSON(w, http.StatusCreated, answerRequest)
 }

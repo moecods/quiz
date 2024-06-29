@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"moecods/quiz/utils"
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -53,11 +54,5 @@ func (h *ParticipantHandler) RegisterParticipantsHandler(w http.ResponseWriter, 
 		log.Println(err)
 		http.Error(w, "Failed to store", http.StatusInternalServerError)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(participants); err != nil {
-		log.Printf("Failed to encode response: %v", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-	}
+	utils.RespondWithJSON(w, http.StatusOK, participants)
 }

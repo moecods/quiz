@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"moecods/quiz/utils"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,13 +22,7 @@ func NewQuizHandler(repo QuizRepository) *QuizHandler {
 
 func (h *QuizHandler) GetQuizzesHandler(w http.ResponseWriter, r *http.Request) {
 	quizzes, _ := h.QuizRepo.ListQuizzes()
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(quizzes); err != nil {
-		log.Printf("Failed to encode response: %v", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-	}
+	utils.RespondWithJSON(w, http.StatusOK, quizzes)
 }
 
 func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
@@ -57,13 +52,7 @@ func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated) // 201 Created
-	if err := json.NewEncoder(w).Encode(quiz); err != nil {
-		log.Printf("Failed to encode response: %v", err)
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-	}
+	utils.RespondWithJSON(w, http.StatusCreated, quiz)
 }
 
 func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) {
@@ -93,9 +82,7 @@ func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(quiz)
+	utils.RespondWithJSON(w, http.StatusOK, quiz)
 }
 
 func (h *QuizHandler) DeleteQuizHandler(w http.ResponseWriter, r *http.Request) {
@@ -136,4 +123,5 @@ func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(quiz)
+	utils.RespondWithJSON(w, http.StatusOK, quiz)
 }
