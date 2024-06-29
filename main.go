@@ -39,7 +39,6 @@ type Participant struct {
 type Answer struct {
 	ID             primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	QuestionID     primitive.ObjectID `bson:"question_id" json:"question_id"`
-	Type           string             `bson:"type" json:"type"`
 	AnswerText     string             `bson:"answer_text" json:"answer_text"`
 	SelectedOption int                `bson:"selection_option" json:"selection_option"`
 	IsCorrect      bool               `bson:"is_correct" json:"is_correct"`
@@ -65,11 +64,10 @@ func main() {
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.DeleteQuizHandler)).Methods(http.MethodDelete)
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.GetQuizHandler)).Methods(http.MethodGet)
 
-	// answerCollection := GetAnswerCollection()
-	// answerRepo := NewAnswerRepository(answerCollection)
-	// answerHandler := NewAnswerHandler(*answerRepo)
+	answerRepo := NewAnswerRepository(quizCollection)
+	answerHandler := NewAnswerHandler(*answerRepo)
 
-	// r.HandleFunc("/quizzes/{id}/answers", recoverHandler(answerHandler.AddAnswersHandler)).Methods(http.MethodPost)
+	r.HandleFunc("/quizzes/{id}/answers", recoverHandler(answerHandler.AddAnswersHandler)).Methods(http.MethodPost)
 
 	participantCollection := GetParticipantCollection()
 	participantRepo := NewParticipantRepository(participantCollection)
