@@ -64,15 +64,11 @@ func main() {
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.DeleteQuizHandler)).Methods(http.MethodDelete)
 	r.HandleFunc("/quizzes/{id}", recoverHandler(quizHandler.GetQuizHandler)).Methods(http.MethodGet)
 
-	answerRepo := NewAnswerRepository(quizCollection)
-	answerHandler := NewAnswerHandler(*answerRepo)
-
-	r.HandleFunc("/quizzes/{id}/answers", recoverHandler(answerHandler.AddAnswersHandler)).Methods(http.MethodPost)
-
 	participantCollection := GetParticipantCollection()
 	participantRepo := NewParticipantRepository(participantCollection)
 	participantHandler := NewParticipantHandler(*participantRepo)
 
+	r.HandleFunc("/participants/answers", recoverHandler(participantHandler.SaveParticipantsAnswersHandler)).Methods(http.MethodPost)
 	r.HandleFunc("/participants/register", recoverHandler(participantHandler.RegisterParticipantsHandler)).Methods(http.MethodPost)
 
 	http.Handle("/", r)
