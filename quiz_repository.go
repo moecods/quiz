@@ -10,15 +10,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type QuizRepository struct {
+type QuizRepository interface {
+	ListQuizzes() ([]Quiz, error)
+	AddQuiz(quiz *Quiz) error
+	UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error
+	DeleteQuiz(id primitive.ObjectID) error
+	GetQuiz(id primitive.ObjectID) (*Quiz, error)
+}
+
+type MongoQuizRepository struct {
 	collection *mongo.Collection
 }
 
-func NewQuizRepository(collection *mongo.Collection) *QuizRepository {
-	return &QuizRepository{collection: collection}
+func NewQuizRepository(collection *mongo.Collection) *MongoQuizRepository {
+	return &MongoQuizRepository{collection: collection}
 }
 
-func (r *QuizRepository) ListQuizzes() ([]Quiz, error) {
+func (r *MongoQuizRepository) ListQuizzes() ([]Quiz, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -46,7 +54,7 @@ func (r *QuizRepository) ListQuizzes() ([]Quiz, error) {
 	return quizzes, nil
 }
 
-func (r *QuizRepository) AddQuiz(quiz *Quiz) error {
+func (r *MongoQuizRepository) AddQuiz(quiz *Quiz) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -58,7 +66,7 @@ func (r *QuizRepository) AddQuiz(quiz *Quiz) error {
 	return err
 }
 
-func (r *QuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {
+func (r *MongoQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -70,7 +78,7 @@ func (r *QuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {
 	return err
 }
 
-func (r *QuizRepository) DeleteQuiz(id primitive.ObjectID) error {
+func (r *MongoQuizRepository) DeleteQuiz(id primitive.ObjectID) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -78,7 +86,7 @@ func (r *QuizRepository) DeleteQuiz(id primitive.ObjectID) error {
 	return err
 }
 
-func (r *QuizRepository) GetQuiz(id primitive.ObjectID) (*Quiz, error) {
+func (r *MongoQuizRepository) GetQuiz(id primitive.ObjectID) (*Quiz, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 

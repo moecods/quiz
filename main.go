@@ -55,7 +55,8 @@ func main() {
 
 	quizCollection := GetQuizCollection()
 	quizRepo := NewQuizRepository(quizCollection)
-	quizHandler := NewQuizHandler(*quizRepo)
+	quizService := *NewQuizService(quizRepo)
+	quizHandler := NewQuizHandler(quizService, quizRepo)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/quizzes", recoverHandler(quizHandler.GetQuizzesHandler)).Methods(http.MethodGet)

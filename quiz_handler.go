@@ -2,8 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"log"
+	"io"
 	"moecods/quiz/utils"
 	"net/http"
 
@@ -13,45 +12,39 @@ import (
 )
 
 type QuizHandler struct {
-	QuizRepo QuizRepository
+	service QuizService
+	repo QuizRepository
 }
 
-func NewQuizHandler(repo QuizRepository) *QuizHandler {
-	return &QuizHandler{QuizRepo: repo}
+func NewQuizHandler(service QuizService,repo QuizRepository) *QuizHandler {
+	return &QuizHandler{repo: repo, service: service}
 }
 
 func (h *QuizHandler) GetQuizzesHandler(w http.ResponseWriter, r *http.Request) {
-	quizzes, _ := h.QuizRepo.ListQuizzes()
+	quizzes, _ := h.repo.ListQuizzes()
 	utils.RespondWithJSON(w, http.StatusOK, quizzes)
 }
 
 func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 	var quiz Quiz
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Failed to read request body: %v", err)
 		http.Error(w, "Failed to read request body", http.StatusInternalServerError)
 		return
 	}
 
 	if err := json.Unmarshal(body, &quiz); err != nil {
-		log.Printf("Failed to unmarshal request body: %v", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	questions := quiz.Questions
-	for i := range questions {
-		questions[i].ID = primitive.NewObjectID()
-	}
-
-	quiz.Questions = questions
-
-	err = h.QuizRepo.AddQuiz(&quiz)
+	quiz, err = h.service.AddQuiz(quiz)
+	
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
+
 	utils.RespondWithJSON(w, http.StatusCreated, quiz)
 }
 
@@ -78,7 +71,7 @@ func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) 
 
 	quiz.ID = id
 
-	if err := h.QuizRepo.UpdateQuiz(id, &quiz); err != nil {
+	if err := h.repo.UpdateQuiz(id, &quiz); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -95,7 +88,7 @@ func (h *QuizHandler) DeleteQuizHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := h.QuizRepo.DeleteQuiz(id); err != nil {
+	if err := h.repo.DeleteQuiz(id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -114,7 +107,7 @@ func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quiz, err := h.QuizRepo.GetQuiz(id)
+	quiz, err := h.repo.GetQuiz(id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
