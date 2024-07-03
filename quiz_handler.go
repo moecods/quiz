@@ -106,8 +106,8 @@ func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid quiz ID", http.StatusBadRequest)
 		return
 	}
-
-	quiz, err := h.repo.GetQuiz(id)
+	
+	quiz, err := h.service.GetQuiz(id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

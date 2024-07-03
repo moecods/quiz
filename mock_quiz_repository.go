@@ -32,6 +32,9 @@ func (m *MockQuizRepository) DeleteQuiz(id primitive.ObjectID) error {
 }
 
 func (m *MockQuizRepository) GetQuiz(id primitive.ObjectID) (*Quiz, error) {
-	fmt.Printf("Mock Get quiz")
-	return &Quiz{}, nil
+	args := m.Called(id)
+	if quiz := args.Get(0); quiz != nil {
+		return quiz.(*Quiz), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
