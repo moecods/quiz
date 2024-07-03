@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"log"
+	"moecods/quiz/utils"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,7 +19,7 @@ func NewParticipantRepository(collection *mongo.Collection) *ParticipantReposito
 }
 
 func (r *ParticipantRepository) ListParticipantzes() ([]Participant, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	cursor, err := r.collection.Find(ctx, bson.M{})
@@ -47,7 +47,7 @@ func (r *ParticipantRepository) ListParticipantzes() ([]Participant, error) {
 }
 
 func (r *ParticipantRepository) AddParticipant(participant *Participant) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	result, err := r.collection.InsertOne(ctx, participant)
@@ -56,7 +56,7 @@ func (r *ParticipantRepository) AddParticipant(participant *Participant) error {
 }
 
 func (r *ParticipantRepository) AddManyParticipants(participants []Participant) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	docs := make([]interface{}, len(participants))
@@ -69,7 +69,7 @@ func (r *ParticipantRepository) AddManyParticipants(participants []Participant) 
 }
 
 func (r *ParticipantRepository) UpdateParticipant(id primitive.ObjectID, participant *Participant) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	filter := bson.M{"_id": id}
@@ -81,7 +81,7 @@ func (r *ParticipantRepository) UpdateParticipant(id primitive.ObjectID, partici
 }
 
 func (r *ParticipantRepository) DeleteParticipant(id primitive.ObjectID) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
@@ -89,7 +89,7 @@ func (r *ParticipantRepository) DeleteParticipant(id primitive.ObjectID) error {
 }
 
 func (r *ParticipantRepository) GetParticipant(id primitive.ObjectID) (*Participant, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	var participant Participant
