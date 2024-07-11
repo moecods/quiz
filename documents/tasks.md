@@ -14,8 +14,14 @@ Quiz has action list, add, update, delete, get
 |  get |&check;|&check;|
 |delete|&cross;|&cross;|
 
-tasks:
+Participant has action register participant, save participants answers
 
+|           action          | test  |service|
+|---------------------------|-------|-------|
+|   register participant    |&cross;|&cross;|
+| save participants answers |&cross;|&check;|
+
+tasks:
 - [x] store quiz with questions (&cross;test)
 - [x] edit quiz with questions  (&cross;test)
 - [x] remove quiz  (&cross;test)
@@ -29,14 +35,13 @@ tasks:
 - [ ] archive quiz with participant after 6 month
 - [ ] create quiz module and import to app
 
-Participant has action 
-
 - [x] register participants (&cross;test)
 - [x] save participants answers (&cross;test)
 - [ ] save single answer
 - [ ] lock participant (stop quiz before end)
 - [ ] get list of participant participated in specific quiz
 - [ ] use redis for save answers faster
+
 
 - [ ] score answers with openAi
 - [ ] score answers with human

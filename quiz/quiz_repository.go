@@ -12,7 +12,7 @@ import (
 
 type QuizRepository interface {
 	ListQuizzes() ([]Quiz, error)
-	AddQuiz(quiz *Quiz) error
+	AddQuiz(quiz *Quiz) (*Quiz, error)
 	UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error
 	DeleteQuiz(id primitive.ObjectID) error
 	GetQuiz(id primitive.ObjectID) (*Quiz, error)
@@ -54,16 +54,17 @@ func (r *MongoQuizRepository) ListQuizzes() ([]Quiz, error) {
 	return quizzes, nil
 }
 
-func (r *MongoQuizRepository) AddQuiz(quiz *Quiz) error {
+func (r *MongoQuizRepository) AddQuiz(quiz *Quiz) (*Quiz, error) {
 	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
 	result, err := r.collection.InsertOne(ctx, quiz)
+	if err != nil {
+		return nil, err
+	}
+
 	quiz.ID = result.InsertedID.(primitive.ObjectID)
-
-	log.Println(result)
-
-	return err
+	return quiz, err
 }
 
 func (r *MongoQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {

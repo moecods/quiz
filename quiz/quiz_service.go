@@ -1,13 +1,21 @@
 package quiz
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"moecods/quiz/utils"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type QuizService struct {
-	repo QuizRepository
+	repo         QuizRepository
+	timeProvider utils.TimeProvider
 }
 
 func NewQuizService(repo QuizRepository) *QuizService {
-	return &QuizService{repo: repo}
+	return &QuizService{
+		repo:         repo,
+		timeProvider: utils.RealTimeProvider{},
+	}
 }
 
 func (s *QuizService) AddQuiz(quiz Quiz) (Quiz, error) {
@@ -17,9 +25,10 @@ func (s *QuizService) AddQuiz(quiz Quiz) (Quiz, error) {
 	}
 
 	quiz.Questions = questions
+	quiz.CreatedAt = s.timeProvider.Now()
+	quiz.UpdatedAt = s.timeProvider.Now()
 
-	err := s.repo.AddQuiz(&quiz)
-
+	_, err := s.repo.AddQuiz(&quiz)
 	return quiz, err
 }
 

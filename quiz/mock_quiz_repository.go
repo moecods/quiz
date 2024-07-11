@@ -16,9 +16,12 @@ func (m *MockQuizRepository) ListQuizzes() ([]Quiz, error) {
 	return []Quiz{}, nil
 }
 
-func (m *MockQuizRepository) AddQuiz(quiz *Quiz) error {
-	fmt.Printf("Mock Add quiz")
-	return nil
+func (m *MockQuizRepository) AddQuiz(quiz *Quiz) (*Quiz, error) {
+	args := m.Called(quiz)
+	if quiz := args.Get(0); quiz != nil {
+		return quiz.(*Quiz), args.Error(1)
+	}
+	return quiz, args.Error(1)
 }
 
 func (m *MockQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {
