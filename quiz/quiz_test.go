@@ -65,6 +65,17 @@ func TestQuizHandler_AddQuiz(t *testing.T) {
 		mockRepo.AssertCalled(t, "AddQuiz", &quiz)
 	})
 
+	t.Run("validation failed to add quiz", func(t *testing.T) {
+		quiz := Quiz{
+			Title: "",
+		}
+
+		validation := QuizValidation{quiz: &quiz}
+		err := validation.QuizValidation()
+		assert.Error(t, err)
+		assert.EqualErrorf(t, err, "title is required", "Error should be: %v, got: %v", "title is required", err)
+	})
+
 	// t.Run("failed to add quiz", func(t *testing.T) {
 	//     mockRepo := new(MockQuizRepository)
 	//     service := &QuizService{repo: mockRepo}

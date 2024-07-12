@@ -39,6 +39,12 @@ func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	quizValidation := QuizValidation{quiz: &quiz}
+	if err := quizValidation.QuizValidation(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	quiz, err = h.service.AddQuiz(quiz)
 	
 	if err != nil {
