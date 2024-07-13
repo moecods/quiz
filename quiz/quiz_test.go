@@ -33,7 +33,7 @@ func TestQuizeHandler_GetQuiz(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestQuizHandler_AddQuiz(t *testing.T) {
+func TestQuizService_AddQuiz(t *testing.T) {
 	t.Run("successful add quiz", func(t *testing.T) {
 		mockRepo := new(MockQuizRepository)
 
@@ -74,6 +74,44 @@ func TestQuizHandler_AddQuiz(t *testing.T) {
 		err := validation.QuizValidation()
 		assert.Error(t, err)
 		assert.EqualErrorf(t, err, "title is required", "Error should be: %v, got: %v", "title is required", err)
+	})
+
+	t.Run("sucessful save new question in quiz", func(t *testing.T) {
+
+		existQuestionId1 := primitive.NewObjectID()
+		existQuestionId2 := primitive.NewObjectID()
+
+		quiz := Quiz{
+			Title: "New Quiz",
+			Questions: []Question{
+				{ID: existQuestionId1, Type: "descriptive", Text: "2+2=?"},
+				{ID: existQuestionId2, Type: "descriptive", Text: "5+5=?"},
+			},
+		}
+
+		newQuestions := []Question{
+			{Type: "descriptive", Text: "3+3=?"},
+			{Type: "descriptive", Text: "4+4=?"},
+			{ID: existQuestionId2, Type: "descriptive", Text: "10+10=?"},
+		}
+
+		service := &QuizService{}
+		service.SaveQuestionsToQuiz(&quiz, newQuestions)
+
+		// Check that the existing question remains unchanged
+		assert.Equal(t, existQuestionId1, quiz.Questions[0].ID, "Existing question ID should not change")
+		assert.Equal(t, "descriptive", quiz.Questions[0].Type, "Existing question type should not change")
+		assert.Equal(t, "2+2=?", quiz.Questions[0].Text, "Existing question text should not change")
+
+		// Check that the existing question update with new data
+		assert.Equal(t, existQuestionId2, quiz.Questions[1].ID, "Existing question ID should not change")
+		assert.Equal(t, "10+10=?", quiz.Questions[1].Text, "Existing question text should updated with new data")
+
+		// Check that new questions are added with new IDs
+		for i := 2; i < 4; i++ {
+			assert.NotEqual(t, primitive.NilObjectID, quiz.Questions[i].ID, "New question ID should be set")
+			assert.Contains(t, []string{"3+3=?", "4+4=?"}, quiz.Questions[i].Text, "New question text should match input")
+		}
 	})
 
 	// t.Run("failed to add quiz", func(t *testing.T) {

@@ -36,3 +36,24 @@ func (s *QuizService) GetQuiz(id primitive.ObjectID) (*Quiz, error) {
 	quiz, error := s.repo.GetQuiz(id)
 	return quiz, error
 }
+
+func (s *QuizService) SaveQuestionsToQuiz(quiz *Quiz, newQuestions []Question) {
+	questionMap := make(map[primitive.ObjectID]int)
+
+	for i, q := range quiz.Questions {
+		questionMap[q.ID] = i
+	}
+
+	for _, newQuestion := range newQuestions {
+		index, exists := questionMap[newQuestion.ID]
+		if exists {
+			quiz.Questions[index] = newQuestion
+		} else {
+			if newQuestion.ID == primitive.NilObjectID {
+				newQuestion.ID = primitive.NewObjectID()
+			}
+
+			quiz.Questions = append(quiz.Questions, newQuestion)
+		}
+	}
+}
