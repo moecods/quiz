@@ -13,10 +13,10 @@ import (
 
 type QuizHandler struct {
 	service QuizService
-	repo QuizRepository
+	repo    QuizRepository
 }
 
-func NewQuizHandler(service QuizService,repo QuizRepository) *QuizHandler {
+func NewQuizHandler(service QuizService, repo QuizRepository) *QuizHandler {
 	return &QuizHandler{repo: repo, service: service}
 }
 
@@ -46,7 +46,7 @@ func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	quiz, err = h.service.AddQuiz(quiz)
-	
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -103,7 +103,16 @@ func (h *QuizHandler) DeleteQuizHandler(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(map[string]string{"message": "Quiz deleted successfully"})
 }
 
+//	 GetQuiz godoc
+//		@Summary		Show an account
+//		@Description	get string by ID
+//		@Tags			quizes
+//		@Accept			json
+//		@Produce		json
+//		@Param			id	path	string	true	"Quiz ID"
+//		@Router			/quizzes/{id} [get]
 func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
+
 	vars := mux.Vars(r)
 	idStr := vars["id"]
 
@@ -112,7 +121,7 @@ func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid quiz ID", http.StatusBadRequest)
 		return
 	}
-	
+
 	quiz, err := h.service.GetQuiz(id)
 
 	if err != nil {
@@ -120,7 +129,5 @@ func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(quiz)
 	utils.RespondWithJSON(w, http.StatusOK, quiz)
 }

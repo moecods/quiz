@@ -6,8 +6,7 @@
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
+            "email": "moecods.dev@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -15,7 +14,33 @@
         },
         "version": "1.0"
     },
-    "host": "petstore.swagger.io",
-    "basePath": "/v2",
-    "paths": {}
+    "host": "localhost:8020",
+    "basePath": "/v1",
+    "paths": {
+        "/quizzes/{id}": {
+            "get": {
+                "description": "get string by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizes"
+                ],
+                "summary": "Show an account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quiz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    }
 }
