@@ -1,4 +1,38 @@
 basePath: /v1
+definitions:
+  quiz.Question:
+    properties:
+      correct_option:
+        type: integer
+      id:
+        type: string
+      options:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      type:
+        description: 'Type of question: "descriptive" or "test"'
+        type: string
+    type: object
+  quiz.Quiz:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      questions:
+        items:
+          $ref: '#/definitions/quiz.Question'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: localhost:8020
 info:
   contact:
@@ -26,7 +60,41 @@ paths:
       produces:
       - application/json
       responses: {}
-      summary: Show an account
+      summary: Show an quiz
       tags:
-      - quizes
+      - quizzes
+    put:
+      consumes:
+      - application/json
+      description: Update an existing quiz by ID
+      parameters:
+      - description: Quiz ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Quiz object
+        in: body
+        name: quiz
+        required: true
+        schema:
+          $ref: '#/definitions/quiz.Quiz'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/quiz.Quiz'
+        "400":
+          description: Invalid quiz ID or request body
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a quiz
+      tags:
+      - quizzes
 swagger: "2.0"

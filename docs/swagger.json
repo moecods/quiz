@@ -27,9 +27,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "quizes"
+                    "quizzes"
                 ],
-                "summary": "Show an account",
+                "summary": "Show an quiz",
                 "parameters": [
                     {
                         "type": "string",
@@ -40,6 +40,109 @@
                     }
                 ],
                 "responses": {}
+            },
+            "put": {
+                "description": "Update an existing quiz by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Update a quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quiz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Quiz object",
+                        "name": "quiz",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/quiz.Quiz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/quiz.Quiz"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid quiz ID or request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "quiz.Question": {
+            "type": "object",
+            "properties": {
+                "correct_option": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "text": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type of question: \"descriptive\" or \"test\"",
+                    "type": "string"
+                }
+            }
+        },
+        "quiz.Quiz": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/quiz.Question"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
             }
         }
     }

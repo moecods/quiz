@@ -54,6 +54,19 @@ func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 	utils.RespondWithJSON(w, http.StatusCreated, quiz)
 }
 
+// UpdateQuizHandler godoc
+//
+//	@Summary		Update a quiz
+//	@Description	Update an existing quiz by ID
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string	true	"Quiz ID"
+//	@Param			quiz	body		Quiz	true	"Quiz object"
+//	@Success		200		{object}	Quiz
+//	@Failure		400		{string}	string	"Invalid quiz ID or request body"
+//	@Failure		500		{string}	string	"Internal Server Error"
+//	@Router			/quizzes/{id} [put]
 func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]
@@ -104,13 +117,13 @@ func (h *QuizHandler) DeleteQuizHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 //	 GetQuiz godoc
-//		@Summary		Show an account
-//		@Description	get string by ID
-//		@Tags			quizes
-//		@Accept			json
-//		@Produce		json
-//		@Param			id	path	string	true	"Quiz ID"
-//		@Router			/quizzes/{id} [get]
+//	@Summary		Show an quiz
+//	@Description	get string by ID
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"Quiz ID"
+//	@Router			/quizzes/{id} [get]
 func (h *QuizHandler) GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
