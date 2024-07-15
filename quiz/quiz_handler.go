@@ -25,6 +25,17 @@ func (h *QuizHandler) GetQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 	utils.RespondWithJSON(w, http.StatusOK, quizzes)
 }
 
+// AddQuizHandler godoc
+//
+//	@Summary		Add a quiz
+//	@Description	Add an quiz
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@param			quiz	body		Quiz	true	"Quiz object"
+//	@Failure		400		{string}	string	"Invalid request body"
+//	@Failure		500		{string}	string	"Failed to read request body"
+//	@Router			/quizzes [post]
 func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 	var quiz Quiz
 
@@ -97,6 +108,16 @@ func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) 
 	utils.RespondWithJSON(w, http.StatusOK, quiz)
 }
 
+// DeleteQuizHandler godoc
+//
+//	@Summary		delete a quiz
+//	@Description	delete an quiz
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Quiz ID"
+//	@Failure		400	{string}	string	"Invalid request body"
+//	@Router			/quizzes/{id} [delete]
 func (h *QuizHandler) DeleteQuizHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]
@@ -116,7 +137,8 @@ func (h *QuizHandler) DeleteQuizHandler(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(map[string]string{"message": "Quiz deleted successfully"})
 }
 
-//	 GetQuiz godoc
+// GetQuiz godoc
+//
 //	@Summary		Show an quiz
 //	@Description	get string by ID
 //	@Tags			quizzes

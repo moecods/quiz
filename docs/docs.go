@@ -23,6 +23,46 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/quizzes": {
+            "post": {
+                "description": "Add an quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Add a quiz",
+                "parameters": [
+                    {
+                        "description": "Quiz object",
+                        "name": "quiz",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/quiz.Quiz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to read request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/quizzes/{id}": {
             "get": {
                 "description": "get string by ID",
@@ -92,6 +132,36 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete an quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "delete a quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quiz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request body",
                         "schema": {
                             "type": "string"
                         }

@@ -46,7 +46,53 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /quizzes:
+    post:
+      consumes:
+      - application/json
+      description: Add an quiz
+      parameters:
+      - description: Quiz object
+        in: body
+        name: quiz
+        required: true
+        schema:
+          $ref: '#/definitions/quiz.Quiz'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to read request body
+          schema:
+            type: string
+      summary: Add a quiz
+      tags:
+      - quizzes
   /quizzes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete an quiz
+      parameters:
+      - description: Quiz ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+      summary: delete a quiz
+      tags:
+      - quizzes
     get:
       consumes:
       - application/json
