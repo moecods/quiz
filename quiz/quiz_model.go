@@ -17,7 +17,7 @@ type Quiz struct {
 
 type Question struct {
 	ID            primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	Type          string             `bson:"type" json:"type"` // Type of question: "descriptive" or "test"
+	Type          string             `bson:"type" json:"type"` // Type of question: "descriptive" or "multiple-choice"
 	Text          string             `bson:"text" json:"text"`
 	Options       []string           `bson:"options" json:"options"`
 	CorrectOption int                `bson:"correct_option" json:"correct_option"`

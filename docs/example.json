@@ -1,0 +1,75 @@
+{
+    "quiz": [
+        {
+            "id": "quiz-1234",
+            "title": "General Knowledge Quiz",
+            "description": "A sample quiz about general knowledge",
+            "questions": [
+                {
+                    "correct_option": 2,
+                    "id": "question-5678",
+                    "options": [
+                        "Paris",
+                        "Berlin",
+                        "Madrid",
+                        "Rome"
+                    ],
+                    "text": "What is the capital of Spain?",
+                    "type": "multiple-choice"
+                },
+                {
+                    "correct_option": 2,
+                    "id": "question-5678",
+                    "options": [
+                        "Paris",
+                        "Berlin",
+                        "Madrid",
+                        "Rome"
+                    ],
+                    "text": "What is the capital of Spain?",
+                    "type": "multiple-choice"
+                },
+                {
+                    "correct_option": 1,
+                    "id": "question-5679",
+                    "options": [
+                        "Earth",
+                        "Mars",
+                        "Venus",
+                        "Jupiter"
+                    ],
+                    "text": "Which planet is known as the Red Planet?",
+                    "type": "multiple-choice"
+                },
+                {
+                    "correct_option": null,
+                    "id": "question-5680",
+                    "options": null,
+                    "text": "Describe the process of photosynthesis.",
+                    "type": "descriptive"
+                },
+                {
+                    "correct_option": 3,
+                    "id": "question-5681",
+                    "options": [
+                        "Nile",
+                        "Amazon",
+                        "Yangtze",
+                        "Mississippi"
+                    ],
+                    "text": "Which is the longest river in the United States?",
+                    "type": "multiple-choice"
+                },
+                {
+                    "correct_option": null,
+                    "id": "question-5682",
+                    "options": null,
+                    "text": "Explain the significance of the theory of relativity.",
+                    "type": "descriptive"
+                }
+            ],
+            "updated_at": "2024-07-16T12:00:00Z",
+            "created_at": "2024-07-16T12:00:00Z"
+        }
+    ]
+}
