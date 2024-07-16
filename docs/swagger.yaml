@@ -1,5 +1,43 @@
 basePath: /v1
 definitions:
+  participant.Answer:
+    properties:
+      answer_text:
+        type: string
+      answered_at:
+        type: string
+      id:
+        type: string
+      is_correct:
+        type: boolean
+      question_id:
+        type: string
+      selection_option:
+        type: integer
+    type: object
+  participant.ParticipantAnswer:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/participant.Answer'
+        type: array
+      participant_id:
+        type: string
+    type: object
+  participant.RegisterRequest:
+    properties:
+      number_of_participants:
+        type: integer
+      quiz_id:
+        type: string
+    type: object
+  participant.SaveParticipantsAnswersRequest:
+    properties:
+      participant_answers:
+        items:
+          $ref: '#/definitions/participant.ParticipantAnswer'
+        type: array
+    type: object
   quiz.Question:
     properties:
       correct_option:
@@ -46,6 +84,58 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /participants/answers:
+    post:
+      consumes:
+      - application/json
+      description: Save participants answers
+      parameters:
+      - description: Save participants answers Request object
+        in: body
+        name: SaveParticipantsAnswersRequest
+        required: true
+        schema:
+          $ref: '#/definitions/participant.SaveParticipantsAnswersRequest'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to read request body
+          schema:
+            type: string
+      summary: Save participants answers
+      tags:
+      - participants
+  /participants/register:
+    post:
+      consumes:
+      - application/json
+      description: Register participants
+      parameters:
+      - description: Register Request object
+        in: body
+        name: RegisterRequest
+        required: true
+        schema:
+          $ref: '#/definitions/participant.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to read request body
+          schema:
+            type: string
+      summary: Register participants
+      tags:
+      - participants
   /quizzes:
     post:
       consumes:

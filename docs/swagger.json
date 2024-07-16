@@ -17,6 +17,86 @@
     "host": "localhost:8020",
     "basePath": "/v1",
     "paths": {
+        "/participants/answers": {
+            "post": {
+                "description": "Save participants answers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "participants"
+                ],
+                "summary": "Save participants answers",
+                "parameters": [
+                    {
+                        "description": "Save participants answers Request object",
+                        "name": "SaveParticipantsAnswersRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/participant.SaveParticipantsAnswersRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to read request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/participants/register": {
+            "post": {
+                "description": "Register participants",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "participants"
+                ],
+                "summary": "Register participants",
+                "parameters": [
+                    {
+                        "description": "Register Request object",
+                        "name": "RegisterRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/participant.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to read request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/quizzes": {
             "post": {
                 "description": "Add an quiz",
@@ -165,6 +245,65 @@
         }
     },
     "definitions": {
+        "participant.Answer": {
+            "type": "object",
+            "properties": {
+                "answer_text": {
+                    "type": "string"
+                },
+                "answered_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_correct": {
+                    "type": "boolean"
+                },
+                "question_id": {
+                    "type": "string"
+                },
+                "selection_option": {
+                    "type": "integer"
+                }
+            }
+        },
+        "participant.ParticipantAnswer": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/participant.Answer"
+                    }
+                },
+                "participant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "participant.RegisterRequest": {
+            "type": "object",
+            "properties": {
+                "number_of_participants": {
+                    "type": "integer"
+                },
+                "quiz_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "participant.SaveParticipantsAnswersRequest": {
+            "type": "object",
+            "properties": {
+                "participant_answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/participant.ParticipantAnswer"
+                    }
+                }
+            }
+        },
         "quiz.Question": {
             "type": "object",
             "properties": {
