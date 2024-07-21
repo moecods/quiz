@@ -22,7 +22,7 @@ func TestQuizeHandler_GetQuiz(t *testing.T) {
 	service := &QuizService{repo: mockRepo}
 
 	QuizId := primitive.NewObjectID()
-	mockRepo.On("GetQuiz", QuizId).Return(&Quiz{ID: QuizId, Title: "Me Before You"}, nil)
+	mockRepo.On("GetQuiz", QuizId).Return(&Quiz{QuizBase: QuizBase{ID: QuizId, Title: "Me Before You"}}, nil)
 	quiz, err := service.GetQuiz(QuizId)
 	assert.NoError(t, err)
 	assert.Equal(t, QuizId, quiz.ID)
@@ -45,13 +45,15 @@ func TestQuizService_AddQuiz(t *testing.T) {
 		service := &QuizService{repo: mockRepo, timeProvider: mockTimeProvider}
 
 		quiz := Quiz{
-			Title:       "New Quiz",
-			Description: "New Description",
+			QuizBase: QuizBase{
+				Title:       "New Quiz",
+				Description: "New Description",
+				CreatedAt: mockTimeProvider.Now(),
+				UpdatedAt: mockTimeProvider.Now(),
+			},
 			Questions: []Question{
 				{Type: "descriptive", Text: "2+2=?"},
 			},
-			CreatedAt: mockTimeProvider.Now(),
-			UpdatedAt: mockTimeProvider.Now(),
 		}
 
 		mockRepo.On("AddQuiz", &quiz).Return(&quiz, nil)
@@ -67,7 +69,7 @@ func TestQuizService_AddQuiz(t *testing.T) {
 
 	t.Run("validation failed to add quiz", func(t *testing.T) {
 		quiz := Quiz{
-			Title: "",
+			QuizBase: QuizBase{Title: ""},
 		}
 
 		validation := QuizValidation{quiz: &quiz}
@@ -82,7 +84,7 @@ func TestQuizService_AddQuiz(t *testing.T) {
 		existQuestionId2 := primitive.NewObjectID()
 
 		quiz := Quiz{
-			Title: "New Quiz",
+			QuizBase: QuizBase{Title: "New Quiz"},
 			Questions: []Question{
 				{ID: existQuestionId1, Type: "descriptive", Text: "2+2=?"},
 				{ID: existQuestionId2, Type: "descriptive", Text: "5+5=?"},

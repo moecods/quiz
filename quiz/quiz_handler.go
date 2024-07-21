@@ -20,6 +20,14 @@ func NewQuizHandler(service QuizService, repo QuizRepository) *QuizHandler {
 	return &QuizHandler{repo: repo, service: service}
 }
 
+// GetQuiz godoc
+//
+//	@Summary		get list of quizzes
+//	@Description	get list of quizzes
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Router			/quizzes [get]
 func (h *QuizHandler) GetQuizzesHandler(w http.ResponseWriter, r *http.Request) {
 	quizzes, _ := h.repo.ListQuizzes()
 	utils.RespondWithJSON(w, http.StatusOK, quizzes)

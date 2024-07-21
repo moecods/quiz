@@ -11,9 +11,9 @@ type MockQuizRepository struct {
 	mock.Mock
 }
 
-func (m *MockQuizRepository) ListQuizzes() ([]Quiz, error) {
+func (m *MockQuizRepository) ListQuizzes() ([]QuizBase, error) {
 	fmt.Printf("Mock list quizzes")
-	return []Quiz{}, nil
+	return []QuizBase{}, nil
 }
 
 func (m *MockQuizRepository) AddQuiz(quiz *Quiz) (*Quiz, error) {

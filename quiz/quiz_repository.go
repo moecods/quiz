@@ -8,10 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type QuizRepository interface {
-	ListQuizzes() ([]Quiz, error)
+	ListQuizzes() ([]QuizBase, error)
 	AddQuiz(quiz *Quiz) (*Quiz, error)
 	UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error
 	DeleteQuiz(id primitive.ObjectID) error
@@ -26,24 +27,26 @@ func NewQuizRepository(collection *mongo.Collection) *MongoQuizRepository {
 	return &MongoQuizRepository{collection: collection}
 }
 
-func (r *MongoQuizRepository) ListQuizzes() ([]Quiz, error) {
+func (r *MongoQuizRepository) ListQuizzes() ([]QuizBase, error) {
 	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
-	cursor, err := r.collection.Find(ctx, bson.M{})
+	projection := bson.M{"questions": 0}
+	cursor, err := r.collection.Find(ctx, bson.M{}, options.Find().SetProjection(projection))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer cursor.Close(ctx)
 
-	var quizzes []Quiz
+	var quizzes []QuizBase
 	for cursor.Next(ctx) {
-		var quiz Quiz
+		var quiz QuizBase
 		err := cursor.Decode(&quiz)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		quizzes = append(quizzes, quiz)
 	}
 
