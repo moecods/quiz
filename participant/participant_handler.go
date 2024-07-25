@@ -32,6 +32,31 @@ func NewParticipantHandler(repo ParticipantRepository) *ParticipantHandler {
 	return &ParticipantHandler{ParticipantRepo: repo}
 }
 
+// GetQuiz godoc
+//
+//	@Summary		get list of participants participated in specific quiz
+//	@Description	get list of participants participated in specific quiz
+//	@Tags			quizzes
+//	@Param			id	path	string	true	"Quiz ID"
+//	@Accept			json
+//	@Produce		json
+//	@Router			/quizzes/{id}/participants [get]
+func (h *ParticipantHandler) GetParticipantsByQuizIDHandler(w http.ResponseWriter, r *http.Request) {
+	quizId, err := utils.ExtractIDFromRequest(r)
+	if err != nil {
+		http.Error(w, "Invalid quiz ID", http.StatusBadRequest)
+		return
+	}
+
+	participants, err := h.ParticipantRepo.GetParticipantsByQuiz(quizId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	utils.RespondWithJSON(w, http.StatusOK, participants)
+}
+
 // RegisterParticipantsHandler godoc
 //
 //	@Summary		Register participants
@@ -61,9 +86,11 @@ func (h *ParticipantHandler) RegisterParticipantsHandler(w http.ResponseWriter, 
 	var participants []Participant
 	for i := 0; i < RegisterRequest.NumberOfParticipants; i++ {
 		participants = append(participants, Participant{
-			ID:     primitive.NewObjectID(),
-			QuizID: RegisterRequest.QuizId,
-			Status: "not_started",
+			ParticipantBase: ParticipantBase{
+				ID:     primitive.NewObjectID(),
+				QuizID: RegisterRequest.QuizId,
+				Status: "not_started",
+			},
 		})
 	}
 
@@ -130,7 +157,7 @@ func (h *ParticipantHandler) SaveParticipantsAnswersHandler(w http.ResponseWrite
 			}
 		}
 
-		err = h.ParticipantRepo.UpdateParticipant(participant.ID, participant)
+		err = h.ParticipantRepo.UpdateParticipant(participant.ParticipantBase.ID, participant)
 
 		if err != nil {
 			http.Error(w, "Failed to update participant", http.StatusInternalServerError)

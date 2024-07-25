@@ -54,6 +54,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "404": {
+                        "description": "Participant Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
                         "description": "Failed to read request body",
                         "schema": {
@@ -104,6 +110,20 @@ const docTemplate = `{
             }
         },
         "/quizzes": {
+            "get": {
+                "description": "get list of quizzes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "get list of quizzes",
+                "responses": {}
+            },
             "post": {
                 "description": "Add an quiz",
                 "consumes": [
@@ -248,6 +268,31 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/quizzes/{id}/participants": {
+            "get": {
+                "description": "get list of participants participated in specific quiz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "get list of participants participated in specific quiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Quiz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
@@ -329,7 +374,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "description": "Type of question: \"descriptive\" or \"test\"",
+                    "description": "Type of question: \"descriptive\" or \"multiple-choice\"",
                     "type": "string"
                 }
             }

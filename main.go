@@ -53,6 +53,7 @@ func main() {
 
 	r.HandleFunc("/v1/participants/answers", recoverHandler(participantHandler.SaveParticipantsAnswersHandler)).Methods(http.MethodPost)
 	r.HandleFunc("/v1/participants/register", recoverHandler(participantHandler.RegisterParticipantsHandler)).Methods(http.MethodPost)
+	r.HandleFunc("/v1/quizzes/{id}/participants", recoverHandler(participantHandler.GetParticipantsByQuizIDHandler)).Methods(http.MethodGet)
 
 	http.Handle("/", r)
 	err := http.ListenAndServe(":8020", nil)

@@ -51,7 +51,7 @@ definitions:
       text:
         type: string
       type:
-        description: 'Type of question: "descriptive" or "test"'
+        description: 'Type of question: "descriptive" or "multiple-choice"'
         type: string
     type: object
   quiz.Quiz:
@@ -103,6 +103,10 @@ paths:
           description: Invalid request body
           schema:
             type: string
+        "404":
+          description: Participant Not Found
+          schema:
+            type: string
         "500":
           description: Failed to read request body
           schema:
@@ -137,6 +141,16 @@ paths:
       tags:
       - participants
   /quizzes:
+    get:
+      consumes:
+      - application/json
+      description: get list of quizzes
+      produces:
+      - application/json
+      responses: {}
+      summary: get list of quizzes
+      tags:
+      - quizzes
     post:
       consumes:
       - application/json
@@ -231,6 +245,23 @@ paths:
           schema:
             type: string
       summary: Update a quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/participants:
+    get:
+      consumes:
+      - application/json
+      description: get list of participants participated in specific quiz
+      parameters:
+      - description: Quiz ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: get list of participants participated in specific quiz
       tags:
       - quizzes
 swagger: "2.0"
