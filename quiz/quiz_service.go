@@ -2,6 +2,7 @@ package quiz
 
 import (
 	"moecods/quiz/utils"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -57,3 +58,21 @@ func (s *QuizService) SaveQuestionsToQuiz(quiz *Quiz, newQuestions []Question) {
 		}
 	}
 }
+
+func (s *QuizService) getQuizEndTime(id primitive.ObjectID) (time.Time, error) {
+	quiz, err := s.GetQuiz(id)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return quiz.EndAt, err
+}
+
+// func (s *QuizService) getQuizStartTime(id primitive.ObjectID) (time.Time, error) {
+// 	quiz, err := s.GetQuiz(id)
+// 	if err != nil {
+// 		return time.Time{}, err
+// 	}
+
+// 	return quiz.StartAt, err
+// }
