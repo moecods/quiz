@@ -32,7 +32,7 @@ func NewParticipantHandler(repo ParticipantRepository) *ParticipantHandler {
 	return &ParticipantHandler{ParticipantRepo: repo}
 }
 
-// GetQuiz godoc
+// GetParticipantsByQuizIDHandler godoc
 //
 //	@Summary		get list of participants participated in specific quiz
 //	@Description	get list of participants participated in specific quiz
