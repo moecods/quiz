@@ -382,11 +382,12 @@ const docTemplate = `{
         "quiz.Quiz": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
+                },
+                "end_at": {
+                    "type": "string",
+                    "example": "2024-07-30T12:00:00Z"
                 },
                 "id": {
                     "type": "string"
@@ -397,10 +398,11 @@ const docTemplate = `{
                         "$ref": "#/definitions/quiz.Question"
                     }
                 },
-                "title": {
-                    "type": "string"
+                "start_at": {
+                    "type": "string",
+                    "example": "2024-07-30T12:00:00Z"
                 },
-                "updated_at": {
+                "title": {
                     "type": "string"
                 }
             }

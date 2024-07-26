@@ -56,9 +56,10 @@ definitions:
     type: object
   quiz.Quiz:
     properties:
-      created_at:
-        type: string
       description:
+        type: string
+      end_at:
+        example: "2024-07-30T12:00:00Z"
         type: string
       id:
         type: string
@@ -66,9 +67,10 @@ definitions:
         items:
           $ref: '#/definitions/quiz.Question'
         type: array
-      title:
+      start_at:
+        example: "2024-07-30T12:00:00Z"
         type: string
-      updated_at:
+      title:
         type: string
     type: object
 host: localhost:8020
