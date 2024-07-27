@@ -24,9 +24,12 @@ func (m *MockQuizRepository) AddQuiz(quiz *Quiz) (*Quiz, error) {
 	return quiz, args.Error(1)
 }
 
-func (m *MockQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {
-	fmt.Printf("Mock Update quiz")
-	return nil
+func (m *MockQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz Quiz) (Quiz, error) {
+	args := m.Called(quiz)
+	if quiz := args.Get(0); quiz != nil {
+		return quiz.(Quiz), args.Error(1)
+	}
+	return quiz, args.Error(1)
 }
 
 func (m *MockQuizRepository) DeleteQuiz(id primitive.ObjectID) error {

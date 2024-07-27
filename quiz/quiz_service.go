@@ -1,6 +1,7 @@
 package quiz
 
 import (
+	"errors"
 	"moecods/quiz/utils"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,16 +20,24 @@ func NewQuizService(repo QuizRepository) *QuizService {
 }
 
 func (s *QuizService) AddQuiz(quiz Quiz) (Quiz, error) {
-	questions := quiz.Questions
-	for i := range questions {
-		questions[i].ID = primitive.NewObjectID()
+	if quiz.IsEnded() {
+		return Quiz{}, errors.New("cannot add quiz: the quiz has already ended")
 	}
 
-	quiz.Questions = questions
 	quiz.CreatedAt = s.timeProvider.Now()
 	quiz.UpdatedAt = s.timeProvider.Now()
 
 	_, err := s.repo.AddQuiz(&quiz)
+	return quiz, err
+}
+
+func (s *QuizService) UpdateQuiz(id primitive.ObjectID, quiz Quiz) (Quiz, error) {
+	if quiz.IsEnded() {
+		return Quiz{}, errors.New("cannot update quiz: the quiz has already ended")
+	}
+
+	quiz.UpdatedAt = s.timeProvider.Now()
+	quiz, err := s.repo.UpdateQuiz(id, quiz)
 	return quiz, err
 }
 

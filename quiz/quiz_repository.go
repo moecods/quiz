@@ -14,7 +14,7 @@ import (
 type QuizRepository interface {
 	ListQuizzes() ([]QuizBase, error)
 	AddQuiz(quiz *Quiz) (*Quiz, error)
-	UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error
+	UpdateQuiz(id primitive.ObjectID, quiz Quiz) (Quiz, error)
 	DeleteQuiz(id primitive.ObjectID) error
 	GetQuiz(id primitive.ObjectID) (*Quiz, error)
 }
@@ -70,7 +70,7 @@ func (r *MongoQuizRepository) AddQuiz(quiz *Quiz) (*Quiz, error) {
 	return quiz, err
 }
 
-func (r *MongoQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) error {
+func (r *MongoQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz Quiz) (Quiz, error) {
 	ctx, cancel := utils.WithTimeoutContext(5 * time.Second)
 	defer cancel()
 
@@ -79,7 +79,7 @@ func (r *MongoQuizRepository) UpdateQuiz(id primitive.ObjectID, quiz *Quiz) erro
 		"$set": quiz,
 	}
 	_, err := r.collection.UpdateOne(ctx, filter, update)
-	return err
+	return quiz, err
 }
 
 func (r *MongoQuizRepository) DeleteQuiz(id primitive.ObjectID) error {
