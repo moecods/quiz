@@ -7,7 +7,6 @@ import (
 	"moecods/quiz/participant"
 	"moecods/quiz/quiz"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -82,30 +81,5 @@ func recoverHandler(h http.HandlerFunc) http.HandlerFunc {
 			}
 		}()
 		h(w, r)
-	}
-}
-
-func CheckQuizEnd(quizIDField string) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			quizID := r.URL.Query().Get(quizIDField)
-			if quizID == "" {
-				http.Error(w, "Quiz ID is missing", http.StatusBadRequest)
-				return
-			}
-
-			endAt, err := getQuizEndTime(quizID)
-			if err != nil {
-				http.Error(w, "Quiz not found", http.StatusNotFound)
-				return
-			}
-
-			if time.Now().After(endAt) {
-				http.Error(w, "Cannot update, quiz has ended", http.StatusForbidden)
-				return
-			}
-
-			next.ServeHTTP(w, r)
-		})
 	}
 }

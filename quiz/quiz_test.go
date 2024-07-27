@@ -17,7 +17,7 @@ func (m MockTimeProvider) Now() time.Time {
 	return m.mockNow()
 }
 
-func TestQuizeHandler_GetQuiz(t *testing.T) {
+func TestQuizHandler_GetQuiz(t *testing.T) {
 	mockRepo := new(MockQuizRepository)
 	service := &QuizService{repo: mockRepo}
 

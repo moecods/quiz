@@ -68,6 +68,7 @@ func (h *QuizHandler) AddQuizHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	utils.RespondWithJSON(w, http.StatusCreated, quiz)
@@ -109,11 +110,13 @@ func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) 
 
 	quiz.ID = id
 
-	if err := h.repo.UpdateQuiz(id, &quiz); err != nil {
+	updatedQuiz, err := h.service.UpdateQuiz(id, quiz);
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	utils.RespondWithJSON(w, http.StatusOK, quiz)
+
+	utils.RespondWithJSON(w, http.StatusOK, updatedQuiz)
 }
 
 // DeleteQuizHandler godoc

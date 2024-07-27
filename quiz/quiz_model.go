@@ -30,3 +30,11 @@ type Question struct {
 	Options       []string           `bson:"options" json:"options"`
 	CorrectOption int                `bson:"correct_option" json:"correct_option"`
 }
+
+func (q *Quiz) IsEnded() bool {
+	return time.Now().After(q.EndAt)
+}
+
+func (q *Quiz) IsActive() bool {
+	return time.Now().After(q.StartAt) && time.Now().Before(q.EndAt)
+}
