@@ -20,9 +20,9 @@ func NewQuizService(repo QuizRepository) *QuizService {
 }
 
 func (s *QuizService) AddQuiz(quiz Quiz) (Quiz, error) {
-	if quiz.IsEnded() {
-		return Quiz{}, errors.New("cannot add quiz: the quiz has already ended")
-	}
+    if err := s.checkQuizNotEnded(quiz); err != nil {
+        return Quiz{}, err
+    }
 
 	quiz.CreatedAt = s.timeProvider.Now()
 	quiz.UpdatedAt = s.timeProvider.Now()
@@ -32,9 +32,9 @@ func (s *QuizService) AddQuiz(quiz Quiz) (Quiz, error) {
 }
 
 func (s *QuizService) UpdateQuiz(id primitive.ObjectID, quiz Quiz) (Quiz, error) {
-	if quiz.IsEnded() {
-		return Quiz{}, errors.New("cannot update quiz: the quiz has already ended")
-	}
+    if err := s.checkQuizNotEnded(quiz); err != nil {
+        return Quiz{}, err
+    }
 
 	quiz.UpdatedAt = s.timeProvider.Now()
 	quiz, err := s.repo.UpdateQuiz(id, quiz)
@@ -65,4 +65,11 @@ func (s *QuizService) SaveQuestionsToQuiz(quiz *Quiz, newQuestions []Question) {
 			quiz.Questions = append(quiz.Questions, newQuestion)
 		}
 	}
+}
+
+func (s *QuizService) checkQuizNotEnded(quiz Quiz) error {
+    if quiz.IsEnded() {
+        return errors.New("the quiz has already ended")
+    }
+    return nil
 }
