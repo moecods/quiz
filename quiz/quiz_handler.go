@@ -20,7 +20,7 @@ func NewQuizHandler(service QuizService, repo QuizRepository) *QuizHandler {
 	return &QuizHandler{repo: repo, service: service}
 }
 
-// GetQuiz godoc
+// GetQuizzesHandler GetQuiz godoc
 //
 //	@Summary		get list of quizzes
 //	@Description	get list of quizzes
@@ -110,7 +110,7 @@ func (h *QuizHandler) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) 
 
 	quiz.ID = id
 
-	updatedQuiz, err := h.service.UpdateQuiz(id, quiz);
+	updatedQuiz, err := h.service.UpdateQuiz(id, quiz)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

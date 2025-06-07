@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	_ "moecods/quiz/docs"
 	"moecods/quiz/participant"
 	"moecods/quiz/quiz"
 	"net/http"
-
-	"github.com/gorilla/mux"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 //	@title			Swagger Example API
@@ -26,6 +26,11 @@ import (
 // @host		localhost:8020
 // @BasePath	/v1
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	client := ConnectToDB()
 	defer func() {
 		if err := client.Disconnect(context.TODO()); err != nil {
@@ -37,9 +42,12 @@ func main() {
 	quizRepo := quiz.NewQuizRepository(quizCollection)
 	quizService := *quiz.NewQuizService(quizRepo)
 	quizHandler := quiz.NewQuizHandler(quizService, quizRepo)
+	aiHandler := quiz.NewAiHandler()
 
 	r := mux.NewRouter()
 	registerSwagger(r)
+
+	r.HandleFunc("/v1/ai/answer", recoverHandler(aiHandler.GenerateAIResponse)).Methods(http.MethodPost)
 
 	r.HandleFunc("/v1/quizzes", recoverHandler(quizHandler.GetQuizzesHandler)).Methods(http.MethodGet)
 	r.HandleFunc("/v1/quizzes", recoverHandler(quizHandler.AddQuizHandler)).Methods(http.MethodPost)

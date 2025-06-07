@@ -38,6 +38,11 @@ definitions:
           $ref: '#/definitions/participant.ParticipantAnswer'
         type: array
     type: object
+  quiz.AIRequest:
+    properties:
+      message:
+        type: string
+    type: object
   quiz.Question:
     properties:
       correct_option:
@@ -86,6 +91,37 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /ai/answer:
+    post:
+      consumes:
+      - application/json
+      description: Accepts a JSON payload with a user message and returns AI-generated
+        response.
+      parameters:
+      - description: User question message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/quiz.AIRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: AI generated answer
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid input or AI error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate AI answer for a given question
+      tags:
+      - AI
   /participants/answers:
     post:
       consumes:

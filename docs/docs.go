@@ -23,6 +23,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ai/answer": {
+            "post": {
+                "description": "Accepts a JSON payload with a user message and returns AI-generated response.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "Generate AI answer for a given question",
+                "parameters": [
+                    {
+                        "description": "User question message",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/quiz.AIRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "AI generated answer",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or AI error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/participants/answers": {
             "post": {
                 "description": "Save participants answers",
@@ -352,6 +398,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/participant.ParticipantAnswer"
                     }
+                }
+            }
+        },
+        "quiz.AIRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         },
